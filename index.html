@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SALA ROSA</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
+
+      body {
+        margin: 0;
+        padding: 0;
+        background: url("background.png"),
+          linear-gradient(to bottom, #000000, #0a0003);
+        font-family: "VT323", monospace;
+        color: #ff008a;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      .crt-container {
+        position: relative;
+        width: 800px;
+        height: 600px;
+        position: relative;
+      }
+
+      .crt {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        border: 4px solid #ff008a;
+        box-shadow: 0 0 20px #ff008a, 0 0 40px rgba(255, 0, 136, 0.5);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .scanlines,
+      .flicker,
+      .vignette {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      .scanlines {
+        background: linear-gradient(
+          to bottom,
+          rgba(255, 0, 138, 0.03) 0%,
+          rgba(255, 0, 138, 0.1) 50%,
+          rgba(255, 0, 138, 0.03) 100%
+        );
+        background-size: 100% 4px;
+      }
+
+      .flicker {
+        background: rgba(0, 0, 0, 0.05);
+        animation: flicker 0.15s infinite;
+      }
+
+      .vignette {
+        box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.7);
+      }
+
+      @keyframes flicker {
+        0%,
+        20%,
+        100% {
+          opacity: 0.1;
+        }
+        22% {
+          opacity: 0.3;
+        }
+        24% {
+          opacity: 0.2;
+        }
+        30% {
+          opacity: 0.6;
+        }
+        32% {
+          opacity: 0.3;
+        }
+        35% {
+          opacity: 0.7;
+        }
+      }
+
+      .menu {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 3;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: transparent;
+        user-select: none;
+      }
+
+      .menu h1 {
+        font-size: 69px;
+        margin-bottom: 40px;
+        text-shadow: 0 0 10px #ff008a, 0 0 20px #9b0053;
+      }
+
+      .menu p {
+        font-size: 28px;
+        margin: 10px 0;
+        text-shadow: 0 0 10px #ff008a;
+      }
+
+      .menu-message {
+        margin-top: 20px;
+        font-size: 20px;
+        color: #ac025c;
+        white-space: pre-line;
+        text-shadow: 0 0 10px #ff008a;
+      }
+
+      .menu .hint {
+        margin-top: 30px;
+        font-size: 16px;
+        color: #ac025c;
+        text-shadow: 0 0 10px #ff008a;
+      }
+
+      .terminal {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: none;
+        flex-direction: column;
+        padding: 20px;
+        box-sizing: border-box;
+        z-index: 4;
+      }
+
+      .terminal h2 {
+        font-size: 36px;
+        text-align: center;
+        margin: 10px 0;
+        text-shadow: 0 0 10px #ff008a;
+      }
+
+      .message-area {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #phrase {
+        font-size: 35px;
+        margin: 66px;
+        text-align: center;
+        text-shadow: 0 0 10px #ff008a;
+      }
+
+      .input-container {
+        text-align: center;
+      }
+
+      #input {
+        width: 300px;
+        padding: 10px;
+        font-size: 24px;
+        background: transparent;
+        border: 2px solid #ff008a;
+        color: #ff008a;
+        font-family: "VT323", monospace;
+        text-align: center;
+        outline: none;
+        box-shadow: 0 0 10px #ff008a;
+      }
+
+      .input-hint {
+        margin-top: 10px;
+        font-size: 16px;
+        color: #ac025c;
+        text-shadow: 0 0 10px #ff008a;
+      }
+
+      #feedback {
+        margin-top: 20px;
+        font-size: 18px;
+        color: #ac025c;
+        text-shadow: 0 0 10px #ff008a;
+        min-height: 40px;
+        text-align: center;
+      }
+
+      .status {
+        display: flex;
+        justify-content: space-between;
+        font-size: 18px;
+        text-shadow: 0 0 10px #ff008a;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="crt-container">
+      <div class="crt">
+        <div class="scanlines"></div>
+        <div class="flicker"></div>
+        <div class="vignette"></div>
+
+        <div class="menu" id="menu">
+          <h1>SALA ROSA</h1>
+          <p>1 - Iniciar</p>
+          <p>2 - Instruções</p>
+          <p class="menu-message" id="menu-message"></p>
+          <p class="hint">Pressione ENTER para selecionar</p>
+        </div>
+
+        <div class="terminal" id="terminal">
+          <h2>Digite o número oculto</h2>
+          <div class="message-area">
+            <div id="phrase">Mensagem secreta aqui</div>
+            <div class="input-container">
+              <input id="input" placeholder="Digite o número" disabled />
+              <div class="input-hint">Dica: é um número entre 10 e 30</div>
+            </div>
+            <div id="feedback"></div>
+          </div>
+          <div class="status">
+            <div>Tentativas: <span id="mistakes">0</span></div>
+            <div>Tempo: <span id="time">00:00</span></div>
+          </div>
+
+          <!-- Áudios para os sons -->
+          <audio id="sound-enter" src="enter.wav" preload="auto"></audio>
+          <audio id="sound-correct" src="correct.wav" preload="auto"></audio>
+          <audio id="sound-wrong" src="wrong.wav" preload="auto"></audio>
+          <audio id="sound-typing" src="typing.wav" preload="auto"></audio>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let menuAtivo = true;
+      let menuSelecionado = null;
+
+      const menu = document.getElementById("menu");
+      const terminal = document.getElementById("terminal");
+      const menuMessage = document.getElementById("menu-message");
+
+      const NUMERO_CORRETO = "23";
+      const MAX_TENTATIVAS = 3;
+      const TEMPO_TOTAL = 15 * 60;
+
+      const frases = [
+        "Vieram em dois. Sempre em dois.",
+        "Como se ainda tentassem andar lado a lado no escuro.",
+        "Mas quando o terceiro chegou… tudo se partiu.",
+        "O ar ficou mais denso.",
+        "As luzes começaram a respirar.",
+        "Não é coisa da cabeça — a sala respira.",
+        "A Energia escorre pelas paredes como suor frio.",
+        "E ela assiste. Sempre assiste.",
+        "Dois olhos não são o bastante pra ver o que se esconde aqui.",
+        "E três corações não deveriam bater fora do peito.",
+        "Eles batem mesmo assim.",
+        "Ritmados. Tum… tum… tum…",
+        "Como um relógio que só conta pra dentro.",
+        "Tentei fugir disso.",
+        "Tentei pensar lógico, manter a mente limpa.",
+        "Mas ela fala quando o silêncio fica grande demais.",
+        "Sussurra nas juntas, nas dobradiças, nas falhas do neon.",
+        "‘Vê o padrão?’, ela pergunta.",
+        "‘Você já sabe.’",
+        "Você sente o número, mesmo que não saiba dizer.",
+        "Ele pulsa na sua nuca.",
+        "Arde nos dedos quando você toca o terminal.",
+        "Ele te persegue desde antes de acordar.",
+        "E quanto mais você tenta negar,",
+        "Mais ele se dobra dentro de você, feito vísceras famintas.",
+        "Não adianta contar. Nem somar.",
+        "Isso não é matemática.",
+        "Isso é sintonia.",
+        "E se você ouvir com o corpo,",
+        "Talvez ainda consiga sair daqui inteiro.",
+      ];
+
+      let tentativas = 0;
+      let tempoRestante = TEMPO_TOTAL;
+      let fraseIndex = 0;
+      let digitando = false;
+      let timerInterval;
+
+      const phrase = document.getElementById("phrase");
+      const input = document.getElementById("input");
+      const feedback = document.getElementById("feedback");
+      const attempts = document.getElementById("mistakes");
+      const timer = document.getElementById("time");
+
+      const soundEnter = document.getElementById("sound-enter");
+      const soundCorrect = document.getElementById("sound-correct");
+      const soundWrong = document.getElementById("sound-wrong");
+      const soundTyping = document.getElementById("sound-typing");
+
+      document.addEventListener("keydown", (e) => {
+        if (menuAtivo) {
+          if (e.key === "1") {
+            menuSelecionado = 1;
+            menuMessage.textContent = "Iniciando o jogo...";
+            soundEnter.play();
+          } else if (e.key === "2") {
+            menuSelecionado = 2;
+            menuMessage.textContent =
+              "Instruções:\nDigite o número correto para desbloquear o terminal.\nVocê tem 3 tentativas e 15 minutos.\nVocê tem bastante tempo para pensar antes de digitar o número.";
+            soundEnter.play();
+          } else if (e.key === "Enter") {
+            if (menuSelecionado === 1) {
+              iniciarJogo();
+              soundEnter.play();
+            } else if (menuSelecionado === 2) {
+              menuMessage.textContent = "";
+              menuSelecionado = null;
+              soundEnter.play();
+            } else {
+              menuMessage.textContent =
+                "Por favor, escolha 1 para iniciar ou 2 para instruções.";
+            }
+          }
+        }
+      });
+
+      function iniciarJogo() {
+        menuAtivo = false;
+        menu.style.display = "none";
+        terminal.style.display = "flex";
+
+        tentativas = 0;
+        tempoRestante = TEMPO_TOTAL;
+        fraseIndex = 0;
+        feedback.textContent = "";
+        attempts.textContent = tentativas;
+
+        input.disabled = false;
+        input.focus();
+
+        atualizarTimer();
+        iniciarTimer();
+        mostrarFrase();
+      }
+
+      function mostrarFrase() {
+        digitando = true;
+        phrase.textContent = "";
+        let texto = frases[fraseIndex];
+        let i = 0;
+
+        function digitar() {
+          if (i < texto.length) {
+            phrase.textContent += texto.charAt(i);
+            i++;
+            setTimeout(digitar, 50);
+          } else {
+            digitando = false;
+          }
+        }
+        digitar();
+      }
+
+      function atualizarTimer() {
+        let minutos = Math.floor(tempoRestante / 60);
+        let segundos = tempoRestante % 60;
+        timer.textContent = `${minutos.toString().padStart(2, "0")}:${segundos
+          .toString()
+          .padStart(2, "0")}`;
+      }
+
+      function iniciarTimer() {
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+          tempoRestante--;
+          atualizarTimer();
+
+          if (tempoRestante <= 0) {
+            clearInterval(timerInterval);
+            feedback.textContent = "TEMPO ESGOTADO! VOCÊ PERDEU!";
+            input.disabled = true;
+          }
+        }, 1000);
+      }
+
+      // Tocar som de digitação a cada tecla digitada no input
+      input.addEventListener("keydown", (e) => {
+        if (!digitando && !input.disabled) {
+          // Evita que sons sejam tocados para teclas de controle
+          const keysPermitidas = /^[a-zA-Z0-9]$/;
+          if (keysPermitidas.test(e.key)) {
+            // Reinicia o som para poder tocar rapidinho em sequencia
+            soundTyping.currentTime = 0;
+            soundTyping.play();
+          }
+        }
+      });
+
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !digitando && !input.disabled) {
+          const resposta = input.value.trim();
+          input.value = "";
+
+          if (resposta === "") {
+            if (fraseIndex < frases.length - 1) {
+              fraseIndex++;
+              mostrarFrase();
+              feedback.textContent = "";
+            } else {
+              feedback.textContent =
+                "Não há mais frases. Tente adivinhar o número secreto.";
+            }
+          } else {
+            if (resposta === NUMERO_CORRETO) {
+              feedback.textContent = "CORRETO! Terminal desbloqueado.";
+              input.disabled = true;
+              clearInterval(timerInterval);
+              soundCorrect.play();
+            } else {
+              tentativas++;
+              attempts.textContent = tentativas;
+              feedback.textContent = `INCORRETO! Tentativa ${tentativas} de ${MAX_TENTATIVAS}.`;
+              soundWrong.play();
+
+              if (tentativas >= MAX_TENTATIVAS) {
+                feedback.textContent =
+                  "\nINCORRETO! Você perdeu todas as tentativas!\nTERMINAL BLOQUEADO";
+                input.disabled = true;
+                clearInterval(timerInterval);
+              }
+            }
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
