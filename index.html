@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -10,8 +10,8 @@
       body {
         margin: 0;
         padding: 0;
-        background: url("background.png"),
-          linear-gradient(to bottom, #000000, #0a0003);
+        background:
+          url("background.png"), linear-gradient(to bottom, #000000, #0a0003);
         font-family: "VT323", monospace;
         color: #ff008a;
         height: 100vh;
@@ -34,7 +34,9 @@
         height: 100%;
         background: #000;
         border: 4px solid #ff008a;
-        box-shadow: 0 0 20px #ff008a, 0 0 40px rgba(255, 0, 136, 0.5);
+        box-shadow:
+          0 0 20px #ff008a,
+          0 0 40px rgba(255, 0, 136, 0.5);
         border-radius: 10px;
         overflow: hidden;
       }
@@ -110,7 +112,9 @@
       .menu h1 {
         font-size: 69px;
         margin-bottom: 40px;
-        text-shadow: 0 0 10px #ff008a, 0 0 20px #9b0053;
+        text-shadow:
+          0 0 10px #ff008a,
+          0 0 20px #9b0053;
       }
 
       .menu p {
@@ -213,6 +217,168 @@
         font-size: 18px;
         text-shadow: 0 0 10px #ff008a;
       }
+      /* ========================= */
+      /* RESPONSIVO PARA MOBILE    */
+      /* ========================= */
+
+      @media (max-width: 768px) {
+        body {
+          padding: 10px;
+          overflow: auto;
+        }
+
+        .crt-container {
+          width: 100%;
+          height: auto;
+          max-width: 100%;
+        }
+
+        .crt {
+          width: 100%;
+          height: auto;
+          min-height: 90vh;
+        }
+
+        .menu h1 {
+          font-size: 42px;
+          margin-bottom: 20px;
+        }
+
+        .menu p {
+          font-size: 22px;
+        }
+
+        .menu-message {
+          font-size: 18px;
+        }
+
+        .menu .hint {
+          font-size: 14px;
+        }
+
+        .terminal h2 {
+          font-size: 28px;
+        }
+
+        #phrase {
+          font-size: 26px;
+          margin: 30px 10px;
+        }
+
+        #input {
+          width: 80%;
+          font-size: 22px;
+        }
+
+        .input-hint,
+        .input-hint2 {
+          font-size: 14px;
+        }
+
+        #feedback {
+          font-size: 16px;
+        }
+
+        .status {
+          font-size: 16px;
+          flex-direction: column;
+          align-items: center;
+          gap: 5px;
+        }
+      }
+      .virtual-keyboard {
+  display: none;
+  margin-top: 30px;
+  width: 100%;
+  max-width: 420px;
+}
+
+      .kb-row {
+        display: flex;
+        justify-content: center;
+        margin: 4px 0;
+      }
+
+     .virtual-keyboard button {
+  font-family: "VT323", monospace;
+  font-size: 26px;
+  width: 90px;
+  height: 70px;
+  margin: 5px;
+  background: black;
+  color: #ff008a;
+  border: 2px solid #ff008a;
+  box-shadow: 0 0 8px #ff008a;
+  cursor: pointer;
+}
+
+      .virtual-keyboard button:active {
+        background: #ff008a;
+        color: black;
+      }
+
+      .kb-space {
+        flex: 1;
+      }
+
+      .kb-enter {
+        min-width: 90px;
+      }
+
+      .kb-back {
+        min-width: 60px;
+      }
+
+      /* aparece apenas no mobile */
+      @media (max-width: 768px) {
+        body {
+          padding: 10px;
+          overflow: auto;
+        }
+
+        .crt-container {
+          width: 100%;
+          height: auto;
+          max-width: 100%;
+        }
+
+        .crt {
+          width: 100%;
+          height: auto;
+          min-height: 90vh;
+        }
+
+        .terminal {
+          overflow-y: auto;
+        }
+      }
+      @media (max-width: 768px) {
+        .virtual-keyboard {
+          display: block;
+        }
+      }
+
+      .menu-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .menu-buttons button {
+        font-family: "VT323", monospace;
+        font-size: 28px;
+        padding: 8px 40px;
+        background: black;
+        color: #ff008a;
+        border: 2px solid #ff008a;
+        box-shadow: 0 0 10px #ff008a;
+        cursor: pointer;
+      }
+
+      .menu-buttons button:hover {
+        background: #ff008a;
+        color: black;
+      }
     </style>
   </head>
   <body>
@@ -224,28 +390,67 @@
 
         <div class="menu" id="menu">
           <h1>SALA ROSA</h1>
-          <p>1 - Iniciar</p>
-          <p>2 - Instruções</p>
+          <div class="menu-buttons">
+            <button id="startBtn">INICIAR</button>
+            <button id="helpBtn">INSTRUÇÕES</button>
+          </div>
           <p class="menu-message" id="menu-message"></p>
           <p class="hint">Pressione ENTER para selecionar</p>
         </div>
 
-        <div class="terminal" id="terminal">
-          <h2>Digite o número oculto</h2>
-          <div class="message-area">
-            <div id="phrase">Mensagem secreta aqui</div>
-            <div class="input-container">
-              <input id="input" placeholder="Digite o número" disabled />
-              <div class="input-hint">Dica: é um número entre 10 e 30</div>
-              <div class="input-hint2">Pressione Enter para continuar</div>
-            </div>
-            <div id="feedback"></div>
-          </div>
-          <div class="status">
-            <div>Tentativas: <span id="mistakes">0</span></div>
-            <div>Tempo: <span id="time">00:00</span></div>
-          </div>
+    <div class="terminal" id="terminal">
 
+  <h2>Digite o número oculto</h2>
+
+  <div class="message-area">
+
+    <div id="phrase">Mensagem secreta aqui</div>
+
+    <div class="input-container">
+      <input id="input" placeholder="Digite o número" disabled />
+      <div class="input-hint">Dica: é um número entre 10 e 30</div>
+      <div class="input-hint2">Pressione Enter para continuar</div>
+    </div>
+
+    <div id="feedback"></div>
+
+  </div>
+
+  <div class="status">
+    <div>Tentativas: <span id="mistakes">0</span></div>
+    <div>Tempo: <span id="time">00:00</span></div>
+  </div>
+
+  <!-- TECLADO NUMÉRICO -->
+  <div class="virtual-keyboard" id="keyboard">
+
+    <div class="kb-row">
+      <button>1</button>
+      <button>2</button>
+      <button>3</button>
+    </div>
+
+    <div class="kb-row">
+      <button>4</button>
+      <button>5</button>
+      <button>6</button>
+    </div>
+
+    <div class="kb-row">
+      <button>7</button>
+      <button>8</button>
+      <button>9</button>
+    </div>
+
+    <div class="kb-row">
+      <button class="kb-back">⌫</button>
+      <button>0</button>
+      <button class="kb-enter">ENTER</button>
+    </div>
+
+  </div>
+
+</div>
           <!-- Áudios para os sons -->
           <audio id="sound-enter" src="enter.wav" preload="auto"></audio>
           <audio id="sound-correct" src="correct.wav" preload="auto"></audio>
@@ -262,7 +467,18 @@
       const menu = document.getElementById("menu");
       const terminal = document.getElementById("terminal");
       const menuMessage = document.getElementById("menu-message");
+      const startBtn = document.getElementById("startBtn");
+const helpBtn = document.getElementById("helpBtn");
+startBtn.onclick = () => {
+  soundEnter.play();
+  iniciarJogo();
+};
 
+helpBtn.onclick = () => {
+  soundEnter.play();
+  menuMessage.textContent =
+    "Instruções:\nDigite o número correto para desbloquear o terminal.\nVocê tem 3 tentativas e 15 minutos.\nVocê tem bastante tempo para pensar antes de digitar o número.";
+};
       const NUMERO_CORRETO = "23";
       const MAX_TENTATIVAS = 3;
       const TEMPO_TOTAL = 15 * 60;
@@ -451,6 +667,31 @@
             }
           }
         }
+      });
+      const keyboard = document.getElementById("keyboard");
+
+      keyboard.addEventListener("click", (e) => {
+        if (e.target.tagName !== "BUTTON") return;
+
+        const key = e.target.textContent;
+
+        if (key === "⌫") {
+          input.value = input.value.slice(0, -1);
+          return;
+        }
+
+        if (key === "ESPAÇO") {
+          input.value += " ";
+          return;
+        }
+
+        if (key === "ENTER") {
+          const event = new KeyboardEvent("keydown", { key: "Enter" });
+          input.dispatchEvent(event);
+          return;
+        }
+
+        input.value += key.toLowerCase();
       });
     </script>
   </body>
