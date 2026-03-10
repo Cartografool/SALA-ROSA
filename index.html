@@ -287,11 +287,11 @@
         }
       }
       .virtual-keyboard {
-  display: none;
-  margin-top: 30px;
-  width: 100%;
-  max-width: 420px;
-}
+        display: none;
+        margin-top: 20px;
+        width: 100%;
+        max-width: 600px;
+      }
 
       .kb-row {
         display: flex;
@@ -379,9 +379,6 @@
         background: #ff008a;
         color: black;
       }
-      #input{
-pointer-events:none;
-}
     </style>
   </head>
   <body>
@@ -574,7 +571,8 @@ helpBtn.onclick = () => {
         feedback.textContent = "";
         attempts.textContent = tentativas;
 
-        input.blur();
+        input.disabled = false;
+        input.focus();
 
         atualizarTimer();
         iniciarTimer();
@@ -687,14 +685,14 @@ helpBtn.onclick = () => {
           return;
         }
 
-       if (key === "ENTER") {
-  verificarResposta();
-  return;
-}
+        if (key === "ENTER") {
+          const event = new KeyboardEvent("keydown", { key: "Enter" });
+          input.dispatchEvent(event);
+          return;
+        }
 
         input.value += key.toLowerCase();
       });
     </script>
   </body>
 </html>
-
