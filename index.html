@@ -379,6 +379,9 @@
         background: #ff008a;
         color: black;
       }
+      #input{
+pointer-events:none;
+}
     </style>
   </head>
   <body>
@@ -571,8 +574,7 @@ helpBtn.onclick = () => {
         feedback.textContent = "";
         attempts.textContent = tentativas;
 
-        input.disabled = false;
-        input.focus();
+        input.blur();
 
         atualizarTimer();
         iniciarTimer();
