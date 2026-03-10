@@ -687,14 +687,14 @@ helpBtn.onclick = () => {
           return;
         }
 
-        if (key === "ENTER") {
-          const event = new KeyboardEvent("keydown", { key: "Enter" });
-          input.dispatchEvent(event);
-          return;
-        }
+       if (key === "ENTER") {
+  verificarResposta();
+  return;
+}
 
         input.value += key.toLowerCase();
       });
     </script>
   </body>
 </html>
+
